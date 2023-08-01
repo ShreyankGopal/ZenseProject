@@ -1,0 +1,31 @@
+/* main.css */
+/* main.css */
+body {
+  background-image: url("https://images-cdn.welcomesoftware.com/Zz0zZTliMjQ4MzhlNGExMWViYmJiMjFiZTI2ZWNmN2MzZA==");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-color: #000000;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  background-color: #e22a2a;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  margin: 100px auto;  /* Adjust the value to control the vertical position */
+}
+
+
+/* styles.css */
+/* Center align the container */
+/* main.css */
+.account-img {
+  width: 150px; /* Set the desired width */
+  height: 150px; /* Set the desired height */
+}
+
