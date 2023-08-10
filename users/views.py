@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import UserRegisterForm,UserUpdateForm, ProfileUpdateForm
+from .forms import UserRegisterForm,UserUpdateForm, ProfileUpdateForm,QuizForm
 from django.contrib.auth.decorators import login_required
 from .models import Profile,Quiz,Questions,Answers
 from django.http import HttpResponse
+from django.http import JsonResponse
+
+
 
 def register(request):
     if request.method == 'POST':
@@ -48,11 +51,53 @@ def profile(request):
 
 
 
-def Quizlist(request,pk):
-    quizzes = Quiz.objects.get(pk=pk)
+def Quizlist(request):
+    quizzes = Quiz.objects.all()
     context = {'quizzes': quizzes}
     return render(request, 'users/QuizList.html', context)
     #return HttpResponse('<h1>hi</h1>')
+'''def questions(request,pk):
+
+    quizzes = Quiz.objects.get(pk=pk)
+    #questions=Questions.objects.all()
+    ques=[]
+    
+    for q in quizzes.get_questions():
+        
+        ans=[]#to make sure after every question, we reset the answers 
+        for a in q.get_answers():
+            ans.append(a.text)
+        ques.append({str(q):ans})
+
+
+    context={'quizzes':quizzes,
+             'questions':ques
+             }
+    return render(request,'users/Questions.html',context)
+
+
+# views.py'''
+
+
+
+@login_required
+def questions(request, pk):
+    quizzes = Quiz.objects.get(pk=pk)
+    questions_list = []
+
+    for q in quizzes.get_questions():
+        answer=[]
+        for a in q.get_answers():
+            answer.append(a.text)
+        questions_list.append({str(q):answer})
+
+    context={'data':questions_list}
+    return JsonResponse(context)
+
+                    
+    #else:
+        #return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
 #from django.shortcuts import get_object_or_404
 
 '''@login_required

@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Profile
+from .models import Profile,Answers
+
+
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
@@ -41,4 +43,26 @@ class ProfileUpdateForm(forms.ModelForm):
         model = Quiz
         fields = ['selected_option']'''
 
+# forms.py
+
+
+# forms.py
+
+
+class QuizForm(forms.Form):
+    def __init__(self, *args, questions=None, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if questions:
+            for question_dict in questions:
+                for question, answers in question_dict.items():
+                    question_id = question.id
+                    choices = [(answer.id, answer.text) for answer in answers]
+                    self.fields[f'question_{question_id}'] = forms.ChoiceField(
+                        choices=choices,
+                        widget=forms.RadioSelect,
+                        required=True,
+                    )
+
+                    
 

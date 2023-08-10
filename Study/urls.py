@@ -28,7 +28,9 @@ urlpatterns = [
     path("", include("studyapp.urls")),
     path('admin/', admin.site.urls),
     path('profile/', user_views.profile, name='profile'),
-    path('quizzes/<int:pk>', user_views.Quizlist, name='quizzes'),
+    path('quizzes', user_views.Quizlist, name='quizzes'),
+    path('questions/<int:pk>',user_views.questions,name='questions'),
+    #path('save_answer/', user_views.save_answer, name='save_answer'),
 
 ]
 if settings.DEBUG:

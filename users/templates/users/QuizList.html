@@ -1,5 +1,7 @@
 {% extends 'studyapp/base.html'%}
 {% block content%}
-    <h3>{{quizzes.topic}}</h3>
+    {% for quiz in quizzes %}
+    <h3>{{quiz.topic}}</h3>
+    {% endfor %}
 
 {% endblock%}
