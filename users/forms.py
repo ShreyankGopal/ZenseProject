@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Profile,Answers
+from .models import Profile,Answers,Questions,Quiz
+from django.forms import ModelForm
 
 
 
@@ -49,11 +50,60 @@ class ProfileUpdateForm(forms.ModelForm):
 # forms.py
 
 
-class QuizForm(forms.Form):
-    def __init__(self, *args, questions=None, **kwargs):
-        super().__init__(*args, **kwargs)
+'''class QuizForm(forms.ModelForm):
+    class Meta:
+        model = Questions
+        fields = ['text']
+        exclude = ["text"]  # Add other fields as needed
+        
+    def __init__(self, *args, **kwargs):
+        super(QuizForm, self).__init__(*args, **kwargs)
+        
+        
+        question_instance = kwargs.get('instance')
+        
+        
+        answers = question_instance.get_answers()
+        
+        
+        answer_choices = [(answer.text, answer.text) for answer in answers]
+        
+        
+        self.fields['selected_answer'] = forms.ChoiceField(
+            label="Select the correct answer",
+            choices=answer_choices,
+            widget=forms.RadioSelect
+        )'''
+class QuizForm(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        fields = ['text']
+        exclude = ["text"]  # Add other fields as needed
+        
+    def __init__(self, *args, **kwargs):
+        super(QuizForm, self).__init__(*args, **kwargs)
+        
+        
+        quiz_instance = kwargs.get('instance')
+        
+        questions=quiz_instance.get_questions()
+        answers = questions.get_answers()
+        
+        
+        answer_choices = [(answer.text, answer.text) for answer in answers]
+        
+        
+        self.fields['selected_answer'] = forms.ChoiceField(
+            label="Select the correct answer",
+            choices=answer_choices,
+            widget=forms.RadioSelect
+        )
+            
+                       
+    #def __init__(self, *args, questions=None, **kwargs):
+        #super().__init__(*args, **kwargs)
 
-        if questions:
+        '''if questions:
             for question_dict in questions:
                 for question, answers in question_dict.items():
                     question_id = question.id
@@ -62,7 +112,9 @@ class QuizForm(forms.Form):
                         choices=choices,
                         widget=forms.RadioSelect,
                         required=True,
-                    )
+                    )'''
+   
+    
 
                     
 

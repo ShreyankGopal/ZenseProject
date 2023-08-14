@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import UserRegisterForm,UserUpdateForm, ProfileUpdateForm,QuizForm
 from django.contrib.auth.decorators import login_required
-from .models import Profile,Quiz,Questions,Answers
+from .models import Profile,Quiz,Questions,Answers,UserAnswer
 from django.http import HttpResponse
 from django.http import JsonResponse
 
@@ -51,7 +51,7 @@ def profile(request):
 
 
 
-def Quizlist(request):
+def quizlistview(request):
     quizzes = Quiz.objects.all()
     context = {'quizzes': quizzes}
     return render(request, 'users/QuizList.html', context)
@@ -80,8 +80,8 @@ def Quizlist(request):
 
 
 
-@login_required
-def questions(request, pk):
+#@login_required
+'''def questions(request, pk):
     quizzes = Quiz.objects.get(pk=pk)
     questions_list = []
 
@@ -92,7 +92,7 @@ def questions(request, pk):
         questions_list.append({str(q):answer})
 
     context={'data':questions_list}
-    return JsonResponse(context)
+    return JsonResponse(context)'''
 
                     
     #else:
@@ -128,6 +128,84 @@ def quiz_view(request, pk):
         'form': form,
     }
     return render(request, 'users/quiz.html', context)'''
+'''@login_required
+def questions(request, pk):
+    try:
+        question_instance = Questions.objects.get(pk=pk)
+        
+    except Questions.DoesNotExist:
+        # Handle the case when the question doesn't exist
+        return redirect('quiz_not_found')  # Redirect to an appropriate view
+     
+    if request.method == 'POST':
+        form = QuizForm(request.POST, instance=question_instance)
+        if form.is_valid():
 
+            selected_answer_text = form.cleaned_data['selected_answer']
+            selected_answer = Answers.objects.get(question=question_instance, text=selected_answer_text)
+            user_answer=form.save(commit=False)
+            # Create a UserAnswer instance to track the selected answer
+            
+            user_answer,created = UserAnswer.objects.get_or_create(
+            
+            user=request.user,
+            question=question_instance
+            )
+            #user_answer = UserAnswer.objects.create(user=request.user, question=question_instance, answer=selected_answer)
+            user_answer.answer = selected_answer
+            user_answer.save()
+            # Save the form after creating the UserAnswer instance
+            
+            
+            # Redirect to the next question or a thank you page
+            #return redirect('next_question_view')
+    else:
+        form = QuizForm(instance=question_instance)
+    context={'form':form,'question':question_instance}
+    
+    return render(request, 'users/quiz.html', context)'''
+@login_required
+def quizdetailview(request,pk):
+    quiz_instance=Quiz.objects.get(pk=pk)
+    context={'quizdetail':quiz_instance}
+    return render(request,'users/quizdetail.html',context)
 
+@login_required
+def quizquestions(request, pk):
+    try:
+        quiz_instance = Quiz.objects.get(pk=pk)
+        
+    except Quiz.DoesNotExist:
+        # Handle the case when the question doesn't exist
+        return redirect('quiz_not_found')  # Redirect to an appropriate view
+     
+    if request.method == 'POST':
+        form = QuizForm(request.POST, instance=quiz_instance)
+        if form.is_valid():
+
+            selected_answer_text = form.cleaned_data['selected_answer']
+            question_answered = Questions.objects.get(quiz=quiz_instance, text=selected_answer_text.question.text,correct=selected_answer_text.question.correct)
+            selected_answer=Answers.objects.get(text=selected_answer_text.text,question=question_answered)
+            user_answer=form.save(commit=False)
+            # Create a UserAnswer instance to track the selected answer
+            
+            user_answer,created = UserAnswer.objects.get_or_create(
+            
+            user=request.user,
+            question=question_answered
+            )
+            #user_answer = UserAnswer.objects.create(user=request.user, question=question_instance, answer=selected_answer)
+            user_answer.quiz=quiz_instance
+            user_answer.answer = selected_answer
+            user_answer.save()
+            # Save the form after creating the UserAnswer instance
+            
+            
+            # Redirect to the next question or a thank you page
+            #return redirect('next_question_view')
+    else:
+        form = QuizForm(instance=quiz_instance)
+    context={'form':form,'quiz':quiz_instance}
+    
+    return render(request, 'users/quiz.html', context)
 

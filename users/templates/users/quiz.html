@@ -1,86 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz</title>
-    <style>
-        body {
-            background-image: url("https://coolbackgrounds.io/images/backgrounds/index/ranger-4df6c1b6.png");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .container {
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 5000px;
-            margin: auto;
-            text-align: center;
-        }
-
-        form {
-            margin-top: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 10px;
-        }
-
-        .options {
-            text-align: left;
-            margin-left: 40px; /* Adjust this value as needed */
-        }
-
-        .btn-primary {
-            margin-top: 20px;
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="mt-4 d-flex justify-content-end">
-            {% if user.is_authenticated %}
-            <a href="{% url 'quiz' pk=1 %}" class="btn btn-secondary btn-lg">Quizzes</a>
-            <a href="{% url 'profile' %}" class="btn btn-secondary btn-lg">Profile</a>
-            <a href="{% url 'logout' %}" class="btn btn-secondary btn-lg mr-2">Log Out</a>
-            
-            {% else %}
-            <div class="d-flex justify-content-center">
-              <a href="{% url 'register' %}" class="btn btn-primary btn-lg mr-2">Register</a>
-              <a href="{% url 'login' %}" class="btn btn-secondary btn-lg">Log In</a>
-            </div>
-           {% endif %}
-          </div>
-        <h2>Quiz</h2>
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="question">Question:</label>
-                <p>{{ quiz.question }}</p>
-            </div>
-            <div class="options">
-                <p>1) {{ quiz.option1 }}</p>
-                <p>2) {{ quiz.option2 }}</p>
-                <p>3) {{ quiz.option3 }}</p>
-                <p>4) {{ quiz.option4 }}</p>
-            </div>
-            {% for field in form %}
-                <div>
-                    {{ field }}
-                </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-primary mt-3">Save</button>
-        </form>
-    </div>
+    <h3>Quiz</h3>
+    {% for question in quiz.get_questions%}
+    <b>{{question.text}}</b>
+    {% load crispy_forms_tags %}
+    <form method="post" novalidate>
+        
+        {% csrf_token %}
+        
+        
+        
+        
+            <!--<input type="radio" name="{{ form.selected_answer.name }}" value="{{ radio.choice_value }}" id="{{ radio.id_for_label }}">
+            <label for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label><br>-->
+            {{form.as_p}}
+        
+        
+        <button type="submit">save</button>
+    </form>
+    {% endfor %}
 </body>
 </html>
+
 
 
 
