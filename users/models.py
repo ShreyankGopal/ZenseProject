@@ -4,6 +4,7 @@ import uuid
 from django.contrib.auth.models import User
 
 
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='https://campussafetyconference.com/wp-content/uploads/2020/08/iStock-476085198.jpg', upload_to='profile_pics')
@@ -23,7 +24,7 @@ class Quiz(models.Model):
 class Questions(models.Model):
     text=models.CharField(max_length=200)
     quiz=models.ForeignKey(Quiz,on_delete=models.CASCADE)
-    correct=models.CharField(max_length=25)
+    correct=models.CharField(max_length=50)
     
     def __str__(self):
         return str(self.text)
@@ -35,7 +36,7 @@ class Answers(models.Model):
     def __str__(self):
         return f"Question: {self.question.text}, Answer: {self.text}"
 class UserAnswer(models.Model):
-    quiz=models.ForeignKey(Quiz,on_delete=models.CASCADE)
+    quiz=models.ForeignKey(Quiz,on_delete=models.CASCADE,null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Questions, on_delete=models.CASCADE)
     answer = models.ForeignKey(Answers, on_delete=models.CASCADE,null=True,blank=True)   

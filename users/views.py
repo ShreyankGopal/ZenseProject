@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Profile,Quiz,Questions,Answers,UserAnswer
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.contrib.auth import get_user_model
+
 
 
 
@@ -182,15 +184,15 @@ def quizquestions(request, pk):
     if request.method == 'POST':
         form = QuizForm(request.POST, instance=quiz_instance)
         if form.is_valid():
-
-            selected_answer_text = form.cleaned_data['selected_answer']
-            question_answered = Questions.objects.get(quiz=quiz_instance, text=selected_answer_text.question.text,correct=selected_answer_text.question.correct)
-            selected_answer=Answers.objects.get(text=selected_answer_text.text,question=question_answered)
+            
+            #selected_answer = form.cleaned_data[selected_answer]
+            selected_answer_id=request.POST.get("selected_answer")
+            
+            selected_answer=Answers.objects.get(id=selected_answer_id)
+            question_answered=selected_answer.question
             user_answer=form.save(commit=False)
             # Create a UserAnswer instance to track the selected answer
-            
             user_answer,created = UserAnswer.objects.get_or_create(
-            
             user=request.user,
             question=question_answered
             )
@@ -208,4 +210,15 @@ def quizquestions(request, pk):
     context={'form':form,'quiz':quiz_instance}
     
     return render(request, 'users/quiz.html', context)
+def results(request):
+    User = get_user_model()
+    users=User.objects.all()
+    quizs=Quiz.objects.all()
+    for user in users:
+        for quiz in quizs:
+            for question in quiz.get_questions():
+                
+
+
+        
 

@@ -1,29 +1,23 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Quiz</title>
-</head>
-<body>
-    <h3>Quiz</h3>
-    {% for question in quiz.get_questions%}
-    <b>{{question.text}}</b>
-    {% load crispy_forms_tags %}
-    <form method="post" novalidate>
+    <head>
+        <title>Quiz</title>
+    </head>
+    <body>
+        <h3>Quiz</h3>
+        {% for question in quiz.get_questions%}
+            <b>{{question.text}}</b>
+    
+            <form method="post" novalidate>
         
-        {% csrf_token %}
+                {% csrf_token %}
+                {{form.as_p}}
+                <button type="submit">save</button>
+            </form>
+            <hr>
+        {% endfor %}
         
-        
-        
-        
-            <!--<input type="radio" name="{{ form.selected_answer.name }}" value="{{ radio.choice_value }}" id="{{ radio.id_for_label }}">
-            <label for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label><br>-->
-            {{form.as_p}}
-        
-        
-        <button type="submit">save</button>
-    </form>
-    {% endfor %}
-</body>
+    </body>
 </html>
 
 

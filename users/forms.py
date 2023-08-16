@@ -80,40 +80,31 @@ class QuizForm(forms.ModelForm):
         fields = ['text']
         exclude = ["text"]  # Add other fields as needed
         
+    selected_answer = forms.ChoiceField(
+        label="",
+        choices=[],  # We'll update choices dynamically
+        widget=forms.RadioSelect
+    )
+    
     def __init__(self, *args, **kwargs):
         super(QuizForm, self).__init__(*args, **kwargs)
         
-        
         quiz_instance = kwargs.get('instance')
-        
-        questions=quiz_instance.get_questions()
-        answers = questions.get_answers()
-        
-        
-        answer_choices = [(answer.text, answer.text) for answer in answers]
-        
-        
-        self.fields['selected_answer'] = forms.ChoiceField(
-            label="Select the correct answer",
-            choices=answer_choices,
-            widget=forms.RadioSelect
-        )
+        questions = quiz_instance.get_questions()
+        answer_choices = []
+        for question in questions:
+            answers = question.get_answers()
+            answer_choices=[(answer.id, answer.text) for answer in answers]
+            
+            self.fields["selected_answer"] = forms.ChoiceField(
+                    label='select the correct option',
+                    choices=answer_choices,
+                    widget=forms.RadioSelect
+                )
+            
             
                        
-    #def __init__(self, *args, questions=None, **kwargs):
-        #super().__init__(*args, **kwargs)
-
-        '''if questions:
-            for question_dict in questions:
-                for question, answers in question_dict.items():
-                    question_id = question.id
-                    choices = [(answer.id, answer.text) for answer in answers]
-                    self.fields[f'question_{question_id}'] = forms.ChoiceField(
-                        choices=choices,
-                        widget=forms.RadioSelect,
-                        required=True,
-                    )'''
-   
+    
     
 
                     
