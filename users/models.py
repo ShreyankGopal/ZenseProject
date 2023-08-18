@@ -17,6 +17,7 @@ class Quiz(models.Model):
     number_of_questions=models.IntegerField()
     difficulty=models.CharField(max_length=100,choices=difficulty_choices)
     TimeLimit=models.IntegerField(blank=True)
+    Attempted=models.IntegerField(default=0)
     def get_questions(self):
         return self.questions_set.all()[:self.number_of_questions]
 
@@ -44,8 +45,9 @@ class UserAnswer(models.Model):
 class Results(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     quiz=models.ForeignKey(Quiz,on_delete=models.CASCADE)
-    correct=models.IntegerField()
-    wrong=models.IntegerField()
+    correct=models.IntegerField(default=0)
+    wrong=models.IntegerField(default=0)
+    totalmarks=models.IntegerField(default=0)
     
 
 

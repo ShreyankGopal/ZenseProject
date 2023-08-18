@@ -5,7 +5,7 @@
     </head>
     <body>
         <h3>Quiz</h3>
-        {% for question in quiz.get_questions%}
+        
             <b>{{question.text}}</b>
     
             <form method="post" novalidate>
@@ -15,7 +15,7 @@
                 <button type="submit">save</button>
             </form>
             <hr>
-        {% endfor %}
+        
         
     </body>
 </html>

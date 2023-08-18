@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import Profile,Questions,Answers,Quiz,UserAnswer
+from .models import Profile,Questions,Answers,Quiz,UserAnswer,Results
 admin.site.register(Profile)
 admin.site.register(Quiz)
 admin.site.register(UserAnswer)
-
+admin.site.register(Results)
 class AnswerInline(admin.TabularInline):
     model=Answers
 class QuestionAdmin(admin.ModelAdmin):

@@ -20,6 +20,7 @@ from users import views as user_views
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
+
 urlpatterns = [
     
     path('Register/', user_views.register, name='register'),
@@ -29,10 +30,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('profile/', user_views.profile, name='profile'),
     path('quizlist/',user_views.quizlistview,name='quizlist'),
-    path('quizzes/', include("users.urls")),
+    
     #path('questions/<int:pk>',user_views.questions,name='questions'),
     #path('save_answer/', user_views.save_answer, name='save_answer'),
-
+    path('results/',user_views.results,name='results'),
+    path('quizzes/<int:quiz_id>/question/<int:question_id>',user_views.quizquestions,name='quizquestions')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

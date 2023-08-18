@@ -76,7 +76,7 @@ class ProfileUpdateForm(forms.ModelForm):
         )'''
 class QuizForm(forms.ModelForm):
     class Meta:
-        model = Quiz
+        model = Questions
         fields = ['text']
         exclude = ["text"]  # Add other fields as needed
         
@@ -89,18 +89,18 @@ class QuizForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(QuizForm, self).__init__(*args, **kwargs)
         
-        quiz_instance = kwargs.get('instance')
-        questions = quiz_instance.get_questions()
+        question_instance = kwargs.get('instance')
+        
         answer_choices = []
-        for question in questions:
-            answers = question.get_answers()
-            answer_choices=[(answer.id, answer.text) for answer in answers]
+        
+        answers = question_instance.get_answers()
+        answer_choices=[(answer.id, answer.text) for answer in answers]
             
-            self.fields["selected_answer"] = forms.ChoiceField(
-                    label='select the correct option',
-                    choices=answer_choices,
-                    widget=forms.RadioSelect
-                )
+        self.fields["selected_answer"] = forms.ChoiceField(
+                label='select the correct option',
+                choices=answer_choices,
+                widget=forms.RadioSelect
+            )
             
             
                        

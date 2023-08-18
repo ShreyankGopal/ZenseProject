@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import UserRegisterForm,UserUpdateForm, ProfileUpdateForm,QuizForm
 from django.contrib.auth.decorators import login_required
-from .models import Profile,Quiz,Questions,Answers,UserAnswer
+from .models import Profile,Quiz,Questions,Answers,UserAnswer,Results
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
-
+from django.shortcuts import get_object_or_404
 
 
 
@@ -171,52 +171,67 @@ def quizdetailview(request,pk):
     quiz_instance=Quiz.objects.get(pk=pk)
     context={'quizdetail':quiz_instance}
     return render(request,'users/quizdetail.html',context)
+def quizquestions(request, quiz_id, question_id):
+    
+    quiz_instance = get_object_or_404(Quiz, pk=quiz_id)
+    question_instance = get_object_or_404(Questions, pk=question_id, quiz=quiz_instance)
 
-@login_required
-def quizquestions(request, pk):
-    try:
-        quiz_instance = Quiz.objects.get(pk=pk)
-        
-    except Quiz.DoesNotExist:
-        # Handle the case when the question doesn't exist
-        return redirect('quiz_not_found')  # Redirect to an appropriate view
-     
     if request.method == 'POST':
-        form = QuizForm(request.POST, instance=quiz_instance)
+        form = QuizForm(request.POST, instance=question_instance)
         if form.is_valid():
-            
-            #selected_answer = form.cleaned_data[selected_answer]
-            selected_answer_id=request.POST.get("selected_answer")
-            
-            selected_answer=Answers.objects.get(id=selected_answer_id)
-            question_answered=selected_answer.question
-            user_answer=form.save(commit=False)
-            # Create a UserAnswer instance to track the selected answer
-            user_answer,created = UserAnswer.objects.get_or_create(
-            user=request.user,
-            question=question_answered
+            selected_answer_id = request.POST.get("selected_answer")
+            selected_answer = Answers.objects.get(id=selected_answer_id)
+            question_answered = selected_answer.question
+            user_answer = form.save(commit=False)
+            user_answer, created = UserAnswer.objects.get_or_create(
+                user=request.user,
+                question=question_answered
             )
-            #user_answer = UserAnswer.objects.create(user=request.user, question=question_instance, answer=selected_answer)
-            user_answer.quiz=quiz_instance
+            user_answer.quiz = quiz_instance
             user_answer.answer = selected_answer
             user_answer.save()
-            # Save the form after creating the UserAnswer instance
-            
-            
-            # Redirect to the next question or a thank you page
-            #return redirect('next_question_view')
+
+            next_question_id = question_id + 1
+            if next_question_id < quiz_instance.number_of_questions:
+                return redirect('quizquestions', quiz_id=quiz_id, question_id=next_question_id)
+            else:
+                # Quiz is complete, redirect to the result page
+                return HttpResponse("DONE")
     else:
-        form = QuizForm(instance=quiz_instance)
-    context={'form':form,'quiz':quiz_instance}
+        form = QuizForm(instance=question_instance)
+    
+    context = {'form': form, 'quiz': quiz_instance, 'question': question_instance}
     
     return render(request, 'users/quiz.html', context)
+
+@login_required
 def results(request):
-    User = get_user_model()
-    users=User.objects.all()
+    
+    users=request.user
     quizs=Quiz.objects.all()
-    for user in users:
-        for quiz in quizs:
+    results=[]
+    reviews=[]
+    for quiz in quizs:
+            review=[]
+            res,created=Results.objects.get_or_create(user=request.user,quiz=quiz)
+
             for question in quiz.get_questions():
+                if UserAnswer.objects.filter(user=request.user,quiz=quiz,question=question).exists():
+                    userans=UserAnswer.objects.get(user=request.user,quiz=quiz,question=question)
+                
+                    if(str(question.correct)==str(userans.answer.text)):
+                        review.append({question.text:[userans.answer.text,question.correct,'correct']})
+                        res.correct=res.correct+1
+                        res.totalmarks=res.totalmarks+1
+                    else:
+                        review.append({question.text:[userans.answer.text,question.correct,'wrong']})
+                        res.wrong=res.wrong+1
+            
+            results.append([res,review])
+    context={'results':results,
+            'review':reviews}
+    return render(request,'users/results.html',context)
+
                 
 
 

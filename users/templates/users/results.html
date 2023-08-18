@@ -1,0 +1,23 @@
+{% extends 'studyapp/base.html'%}
+{% block content %}
+{% for resrev in results%}
+    <h3>Quiz : {{resrev.0.quiz.topic}}</h1>
+    <h4>Correct answers : {{resrev.0.correct}}</h1>
+    <h4>Wrong answers : {{resrev.0.wrong}}</h1>
+    <h4>Total Marks : {{resrev.0.totalmarks}}</h1>
+    {% for rev in resrev.1 %}
+        
+        {%for key,val in rev.items %}
+            <p>Question : {{key}}</p>
+            
+            <p>Your answer : {{val.0}}</p>
+            <p>correct answer : {{val.1}}</p>
+            <p>status : {{val.2}}</p>
+            
+        
+        {% endfor %}
+    <hr>
+    {% endfor %}
+    <hr>
+{% endfor %}
+{% endblock %}
