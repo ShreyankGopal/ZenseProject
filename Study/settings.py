@@ -34,9 +34,9 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    #'studyapp.apps.StudyappConfig',
+    'studyapp.apps.StudyappConfig',
     'users.apps.UsersConfig',
-    
+    'teachers.apps.TeachersConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -103,6 +103,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+AUTHENTICATION_BACKENDS = [
+    'studyapp.backends.DomainEmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 

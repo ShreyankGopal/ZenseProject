@@ -20,6 +20,8 @@ class Quiz(models.Model):
     Attempted=models.IntegerField(default=0)
     def get_questions(self):
         return self.questions_set.all()[:self.number_of_questions]
+    def __str__(self):
+        return self.topic
 
 
 class Questions(models.Model):
