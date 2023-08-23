@@ -1,8 +1,13 @@
 {% extends 'studyapp/base.html'%}
 {% block content %}
 <ul>
-    <li>Difficulty: {{quizdetail.difficulty}}</li>
-    <li>Number of questions : {{quizdetail.number_of_questions}}</li>
-    <li>Time Limit: {{quizdetail.TimeLimit}} minutes</li>
+    <li>Difficulty: {{quiz.difficulty}}</li>
+    <li>Number of questions : {{quiz.number_of_questions}}</li>
+    <li>Time Limit: {{quiz.TimeLimit}} minutes</li>
 </ul>
+
+<form method="post" action="{% url 'quizquestions' quiz_id=1 question_id=1 %}">
+    {% csrf_token %}
+    <button type="submit">Start Quiz</button>
+</form>
 {% endblock %}

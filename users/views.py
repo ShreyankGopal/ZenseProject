@@ -7,8 +7,9 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-
-
+from django.http import HttpResponseForbidden
+from django.urls import reverse
+from django.views import View
 
 def register(request):
     if request.method == 'POST':
@@ -58,114 +59,13 @@ def quizlistview(request):
     context = {'quizzes': quizzes}
     return render(request, 'users/QuizList.html', context)
     #return HttpResponse('<h1>hi</h1>')
-'''def questions(request,pk):
-
-    quizzes = Quiz.objects.get(pk=pk)
-    #questions=Questions.objects.all()
-    ques=[]
-    
-    for q in quizzes.get_questions():
-        
-        ans=[]#to make sure after every question, we reset the answers 
-        for a in q.get_answers():
-            ans.append(a.text)
-        ques.append({str(q):ans})
-
-
-    context={'quizzes':quizzes,
-             'questions':ques
-             }
-    return render(request,'users/Questions.html',context)
-
-
-# views.py'''
 
 
 
-#@login_required
-'''def questions(request, pk):
-    quizzes = Quiz.objects.get(pk=pk)
-    questions_list = []
 
-    for q in quizzes.get_questions():
-        answer=[]
-        for a in q.get_answers():
-            answer.append(a.text)
-        questions_list.append({str(q):answer})
 
-    context={'data':questions_list}
-    return JsonResponse(context)'''
 
-                    
-    #else:
-        #return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
-#from django.shortcuts import get_object_or_404
-
-'''@login_required
-def quiz_view(request, pk):
-    try:
-        current_quiz = Quiz.objects.get(pk=pk, user=request.user)
-        next_quiz = Quiz.objects.filter(user=request.user, sequence=current_quiz.sequence + 1).first()
-    except Quiz.DoesNotExist:
-        return HttpResponse("Quiz not found.", status=404)
-
-    if request.method == 'POST':
-        form = QuizForm(request.POST, instance=current_quiz)
-        if form.is_valid():
-            selected_answer = form.cleaned_data['selected_option']
-            current_quiz.selected_answer = selected_answer
-            current_quiz.save()
-            # Redirect to the next question or success page
-
-            if next_quiz:
-                return redirect('quiz', pk=next_quiz.pk)
-            else:
-                return HttpResponse("You have completed the quiz!")
-    else:
-        form = QuizForm(instance=current_quiz)
-
-    context = {
-        'quiz': current_quiz,
-        'form': form,
-    }
-    return render(request, 'users/quiz.html', context)'''
-'''@login_required
-def questions(request, pk):
-    try:
-        question_instance = Questions.objects.get(pk=pk)
-        
-    except Questions.DoesNotExist:
-        # Handle the case when the question doesn't exist
-        return redirect('quiz_not_found')  # Redirect to an appropriate view
-     
-    if request.method == 'POST':
-        form = QuizForm(request.POST, instance=question_instance)
-        if form.is_valid():
-
-            selected_answer_text = form.cleaned_data['selected_answer']
-            selected_answer = Answers.objects.get(question=question_instance, text=selected_answer_text)
-            user_answer=form.save(commit=False)
-            # Create a UserAnswer instance to track the selected answer
-            
-            user_answer,created = UserAnswer.objects.get_or_create(
-            
-            user=request.user,
-            question=question_instance
-            )
-            #user_answer = UserAnswer.objects.create(user=request.user, question=question_instance, answer=selected_answer)
-            user_answer.answer = selected_answer
-            user_answer.save()
-            # Save the form after creating the UserAnswer instance
-            
-            
-            # Redirect to the next question or a thank you page
-            #return redirect('next_question_view')
-    else:
-        form = QuizForm(instance=question_instance)
-    context={'form':form,'question':question_instance}
-    
-    return render(request, 'users/quiz.html', context)'''
 @login_required
 def quizdetailview(request,pk):
     quiz_instance=Quiz.objects.get(pk=pk)
@@ -173,8 +73,15 @@ def quizdetailview(request,pk):
     return render(request,'users/quizdetail.html',context)
 def quizquestions(request, quiz_id, question_id):
     
+
+    # Check if the user accessed the URL through the appropriate button
+    #if not request.session.get('quiz_questions_accessed'):
+        #return HttpResponseForbidden("Access denied")
+    Hi=request.session.get('quiz_questions_accessed')
     quiz_instance = get_object_or_404(Quiz, pk=quiz_id)
+    
     question_instance = get_object_or_404(Questions, pk=question_id, quiz=quiz_instance)
+    
 
     if request.method == 'POST':
         form = QuizForm(request.POST, instance=question_instance)
@@ -192,21 +99,21 @@ def quizquestions(request, quiz_id, question_id):
             user_answer.save()
 
             next_question_id = question_id + 1
-            if next_question_id < quiz_instance.number_of_questions:
-                return redirect('quizquestions', quiz_id=quiz_id, question_id=next_question_id)
+            if next_question_id <= quiz_instance.number_of_questions:
+                return redirect('quizquestions',quiz_id=quiz_id,question_id=next_question_id)
             else:
                 # Quiz is complete, redirect to the result page
-                return HttpResponse("DONE")
+                return redirect('results')
     else:
         form = QuizForm(instance=question_instance)
     
-    context = {'form': form, 'quiz': quiz_instance, 'question': question_instance}
+    context = {'form': form, 'quiz': quiz_instance, 'question': question_instance,'Hi':Hi}
     
     return render(request, 'users/quiz.html', context)
 
 @login_required
 def results(request):
-    
+    BASE_URL="http://127.0.0.1:8000/"
     users=request.user
     quizs=Quiz.objects.all()
     results=[]
@@ -220,19 +127,52 @@ def results(request):
                     userans=UserAnswer.objects.get(user=request.user,quiz=quiz,question=question)
                 
                     if(str(question.correct)==str(userans.answer.text)):
-                        review.append({question.text:[userans.answer.text,question.correct,'correct']})
+                        review.append({question.text:[userans.answer.text,question.correct,'✅']})
                         res.correct=res.correct+1
                         res.totalmarks=res.totalmarks+1
                     else:
-                        review.append({question.text:[userans.answer.text,question.correct,'wrong']})
+                        review.append({question.text:[userans.answer.text,question.correct,'❌']})
                         res.wrong=res.wrong+1
             
             results.append([res,review])
     context={'results':results,
-            'review':reviews}
+            'review':reviews,
+            'BASE_URL':BASE_URL}
     return render(request,'users/results.html',context)
+'''class YourView(View):
+    @login_required
+    def get(self, request, *args, **kwargs):
+        try:
+            if self.request.META.get('HTTP_REFERER') == BASE_URL + reverse('users:results'):
+                return redirect('app_name:home_page_name')
+            else:
+                return super().get(request, *args, **kwargs)
+        except Exception:
+            return super().get(request, *args, **kwargs)'''
+'''@login_required
+def thankyou(request):
+    return render(request,'users/ThankYouPage.html')'''
+@login_required
+def quizdetail(request,pk):
+    quiz_instance=Quiz.objects.get(pk=pk)
+    context={
+        'quiz':quiz_instance
+    }
+    return render(request,'users/quizdetail.html',context)
+@login_required
 
-                
+def access_quiz_questions(request, quiz_id, question_id):
+    if request.method == 'POST':
+        # Set a session variable to indicate the button was clicked
+        request.session['quiz_questions_accessed'] = "YES"
+        return redirect('quizquestions', quiz_id=quiz_id, question_id=question_id)
+
+    # Reset the session variable if it's not a form submission
+    request.session['quiz_questions_accessed'] = "NO"
+
+    return render(request, 'users/quizdetail.html')
+
+              
 
 
         

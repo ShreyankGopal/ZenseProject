@@ -135,3 +135,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK ='bootstrap5'
 LOGIN_REDIRECT_URL='home'
 LOGIN_URL='login'
+BASE_URL="http://127.0.0.1:8000/"

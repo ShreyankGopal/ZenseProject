@@ -21,7 +21,7 @@ from teachers import views as teacher_views
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
-
+app_name = 'users'
 urlpatterns = [
     
     path('Register/', user_views.register, name='register'),
@@ -40,7 +40,9 @@ urlpatterns = [
     #path('questions/<int:pk>',user_views.questions,name='questions'),
     #path('save_answer/', user_views.save_answer, name='save_answer'),
     path('results/',user_views.results,name='results'),
-    path('quizzes/<int:quiz_id>/question/<int:question_id>',user_views.quizquestions,name='quizquestions')
+    #path('ThankYou',user_views.thankyou,name='thankyou'),
+    path('quizzes/<int:quiz_id>/question/<int:question_id>',user_views.quizquestions,name='quizquestions'),
+    path('quizzes/<int:pk>',user_views.quizdetail,name='quizdetail')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

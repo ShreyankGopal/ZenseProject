@@ -34,16 +34,25 @@
         <div class="container-fluid mt-4">
             <div class="container">
                 <div class="mt-4 d-flex justify-content-end">
-                  {% if user.is_authenticated and user.email|ends_with_iiitb_com%}
+                  {% if user.is_authenticated%}
+                  {% if user.email|ends_with_iiitb_com%}
                   
                   
                   <a href="{% url 'Create_Question' %}" class="btn btn-secondary btn-lg">Create Question</a>
-                  
-                  
+                  <a href="{% url 'teacherlogout' %}" class="btn btn-secondary btn-lg">logout</a>
+                  {% else %}
+                  <a href="{% url 'profile' %}" class="btn btn-secondary btn-lg">Profile</a> 
+                  <a href="{% url 'quizlist' %}" class="btn btn-secondary btn-lg">Quizzes</a>
+                  <a href="{% url 'logout' %}" class="btn btn-secondary btn-lg">logout</a>
+                  <a href="{% url 'results' %}" class="btn btn-secondary btn-lg">results</a>
+                  {% endif %}
                   {% else %}
                   <div class="d-flex justify-content-center">
-                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg mr-2">Register</a>
-                    <a href="{% url 'login' %}" class="btn btn-secondary btn-lg">Log In</a>
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg mr-2">Sign Up as Student</a>
+                    <a href="{% url 'login' %}" class="btn btn-secondary btn-lg">Log In as Student</a>
+                    <a href="{% url 'TeacherRegister' %}" class="btn btn-secondary btn-lg">Sign Up as Student</a>
+                    <a href="{% url 'teacherlogin' %}" class="btn btn-secondary btn-lg">Log In as Student</a>
+                    
                   </div>
                  {% endif %}
                 </div>
