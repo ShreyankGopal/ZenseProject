@@ -1,7 +1,34 @@
-{% extends 'studyapp/base.html'%}
-{% block content%}
-    {% for quiz in quizzes %}
-    <h3>{{quiz.topic}}</h3>
-    {% endfor %}
+{% extends 'studyapp/base.html' %}
 
-{% endblock%}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz List</title>
+    <style>
+        /* Style for hyperlinks */
+        a {
+            color: blue; /* Change this to the desired color */
+            text-decoration: none; /* Remove underlines from links */
+        }
+
+        /* Style for visited hyperlinks */
+        a:visited {
+            color: purple; /* Change this to the desired color for visited links */
+        }
+
+        /* Style for hovered hyperlinks */
+        a:hover {
+            color: red; /* Change this to the desired color for hovered links */
+        }
+    </style>
+</head>
+<body>
+{% block content %}
+    {% for quiz in quizzes %}
+    <div>
+        <h4><a href="{% url 'quizdetail' quiz.id %}">{{ quiz.topic }}</a></h4>
+    </div>
+    {% endfor %}
+{% endblock %}
+</body>
+</html>

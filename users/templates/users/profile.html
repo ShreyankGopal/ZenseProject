@@ -6,7 +6,9 @@
         <img class="rounded-circle account-img" src="{{ user.profile.image.url }}" alt="Profile Picture" style="width: 150px; height: 150px;">
         <div class="media-body">
           <h2 class="account-heading">{{ user.username }}</h2>
+          <h6>Credits Score : {{profile.credits}} <a href="{% url 'credits' %}">Click here to know more about credits</a></h6>
           <p class="text-secondary">{{ user.email }}</p>
+
         </div>
       </div>
       <form method="POST" enctype="multipart/form-data">
@@ -22,5 +24,7 @@
             <button class="btn btn-outline-info" type="submit">Update</button>
         </div>
     </form>
+    <h4>Your Statistics</h4>
+    <img src="{{ graph_path }}" alt="Graph">
     </div>
 {% endblock content %}

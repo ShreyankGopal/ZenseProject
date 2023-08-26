@@ -1,0 +1,6 @@
+{% extends 'studyapp/base.html' %}
+{% block content %}
+{% for q in quiz %}
+    <h4><a href="{% url 'results' q.id %}">{{q.topic}}</a></h4>
+{% endfor %}
+{% endblock %}

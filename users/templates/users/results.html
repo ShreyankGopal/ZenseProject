@@ -4,14 +4,13 @@
     <h3>Quiz : {{ resrev.0.quiz.topic }}</h3>
     <h4>Correct answers : {{ resrev.0.correct }}</h4>
     <h4>Wrong answers : {{ resrev.0.wrong }}</h4>
-    <h4>Total Marks : {{ resrev.0.totalmarks }}</h4>
+    <h4>Total Marks : {{ resrev.0.totalmarks }}/{{number}}</h4>
     {% for rev in resrev.1 %}
         <div class="question">
             {% for key, val in rev.items %}
                 <p>Question : {{ key }}</p>
                 <p>Your answer : {{ val.0 }}</p>
-                <button class="show-answer-btn">Show Answer</button>
-                <p class="correct-answer" style="display: none;">Correct answer : {{ val.1 }}</p>
+                
                 <p>status : {{ val.2 }}</p>
             {% endfor %}
         </div>
@@ -19,36 +18,8 @@
     {% endfor %}
     <hr>
 {% endfor %}
-<script>
-    window.onload = function() {
-        // Check if the referring URL matches the results page URL
-        console.log('Referrer:', document.referrer);
-        var expectedReferringURL = '{% url "quizquestions" quiz_id=1 question_id=3 %}';
-        
-        // Check if the referring URL contains the expected URL pattern name
-        if (document.referrer.includes(expectedReferringURL)) {
-            // Replace the current history entry with the home page URL
-            window.history.replaceState(null, null, '{% url "quizlist" %}');
-        }
-    };
-</script>
-<script>
-    const showAnswerButtons = document.querySelectorAll('.show-answer-btn');
-    showAnswerButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const questionDiv = button.parentElement;
-            const correctAnswer = questionDiv.querySelector('.correct-answer');
-            
-            if (correctAnswer.style.display === 'none' || correctAnswer.style.display === '') {
-                correctAnswer.style.display = 'block';
-                button.textContent = 'Hide Answer';
-            } else {
-                correctAnswer.style.display = 'none';
-                button.textContent = 'Show Answer';
-            }
-        });
-    });
-</script>
+
+
 
 {% endblock %}
 

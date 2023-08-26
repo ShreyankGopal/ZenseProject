@@ -2,11 +2,11 @@
 {% block content %}
 <ul>
     <li>Difficulty: {{quiz.difficulty}}</li>
-    <li>Number of questions : {{quiz.number_of_questions}}</li>
-    <li>Time Limit: {{quiz.TimeLimit}} minutes</li>
+    <li>Number of questions : {{number}}</li>
+    
 </ul>
 
-<form method="post" action="{% url 'quizquestions' quiz_id=1 question_id=1 %}">
+<form method="post" novalidate>
     {% csrf_token %}
     <button type="submit">Start Quiz</button>
 </form>

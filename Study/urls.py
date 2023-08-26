@@ -39,10 +39,12 @@ urlpatterns = [
     
     #path('questions/<int:pk>',user_views.questions,name='questions'),
     #path('save_answer/', user_views.save_answer, name='save_answer'),
-    path('results/',user_views.results,name='results'),
-    #path('ThankYou',user_views.thankyou,name='thankyou'),
+    path('results/<int:quiz_id>',user_views.results,name='results'),
+    path('results/',user_views.quizresults,name='quizresults'),
+    path('ThankYou',user_views.thankyou,name='thankyou'),
     path('quizzes/<int:quiz_id>/question/<int:question_id>',user_views.quizquestions,name='quizquestions'),
-    path('quizzes/<int:pk>',user_views.quizdetail,name='quizdetail')
+    path('quizzes/<int:quiz_id>',user_views.access_quiz_questions,name='quizdetail'),
+    path('credits/',user_views.credits,name='credits'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
