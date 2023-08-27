@@ -1,6 +1,35 @@
 {% extends 'studyapp/base.html' %}
 {% block content %}
 <p>Your credits score determines your access to different quizzes of different levels. Earn more credits to get access to quizzes.
-    You have unlimited attempts to each quiz and the credits are updated as per your marks in each quiz 😃
+    You have unlimited attempts to each quiz and the credits are updated as per your marks in each quiz 😃.
 </p>
+
+<h4>----------------------------------------------------Credit Criterion----------------------------------------------------------</h4>
+<table  align="center">
+    <tr align="center">
+        <th>% of marks per quiz</th>
+        <th>Credit Score</th>
+    </tr>
+    <tr>
+        <td> greater than or equal to 0 and less than 40 </td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td> greater than or equal to 40 and less than 60 </td>
+        <td>20</td>
+    </tr>
+    <tr>
+        <td> greater than or equal to 60 and less than 80 </td>
+        <td>40</td>
+    </tr>
+    <tr>
+        <td> greater than or equal to 80 and less than 100 </td>
+        <td>60</td>
+    </tr>
+    <tr>
+        <td> Equal to 100 </td>
+        <td>100</td>
+    </tr>
+</table>
+<h6> Important!! Once you give the quiz again the Credits will be updated for the latest attempt and your previous credits are not considered</h6>
 {% endblock %}

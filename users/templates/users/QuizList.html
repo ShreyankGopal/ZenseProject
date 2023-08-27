@@ -25,9 +25,13 @@
 <body>
 {% block content %}
     {% for quiz in quizzes %}
+    {% if prof.credits >= quiz.RequiredCredits %}
     <div>
         <h4><a href="{% url 'quizdetail' quiz.id %}">{{ quiz.topic }}</a></h4>
     </div>
+    {% else %}
+        <h4>{{ quiz.topic }}   Credits needed : {{quiz.RequiredCredits}}</h4><p>reach required credits to unclock </p>
+    {% endif %}
     {% endfor %}
 {% endblock %}
 </body>

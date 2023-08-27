@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.views import View
 import os
 import random
-from .graphs import get_graph
+
 
 def register(request):
     if request.method == 'POST':
@@ -38,14 +38,15 @@ def profile(request):
         profile_instance = Profile.objects.create(user=request.user)
     profile_instance.credits=0
     for res in results:
-        
-        if (res.totalmarks/res.quiz.number_of_questions)*100 >= 40 and (res.totalmarks/res.quiz.number_of_questions)*100<60:
+        if (res.totalmarks/(res.quiz.number_of_questions+1))*100 >= 0 and (res.totalmarks/(res.quiz.number_of_questions+1))*100<=40:
+            profile_instance.credits+=0
+        elif(res.totalmarks/(res.quiz.number_of_questions+1))*100 >= 40 and (res.totalmarks/(res.quiz.number_of_questions+1))*100<60:
             profile_instance.credits+=20
-        if (res.totalmarks/res.quiz.number_of_questions)*100 >= 60 and (res.totalmarks/res.quiz.number_of_questions)*100<80:
+        elif (res.totalmarks/(res.quiz.number_of_questions+1))*100 >= 60 and (res.totalmarks/(res.quiz.number_of_questions+1))*100<80:
             profile_instance.credits+=40
-        if (res.totalmarks/res.quiz.number_of_questions)*100 >= 80 and (res.totalmarks/res.quiz.number_of_questions)*100<100:
+        elif (res.totalmarks/(res.quiz.number_of_questions+1))*100 >= 80 and (res.totalmarks/(res.quiz.number_of_questions+1))*100<100:
             profile_instance.credits+=60
-        if (res.totalmarks/res.quiz.number_of_questions)*100==100:
+        else:
             profile_instance.credits+=100
     profile_instance.save()
     if request.method == 'POST':
@@ -61,13 +62,11 @@ def profile(request):
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=profile_instance)
-    get_graph(request.user)
-    #graph_path = os.path.join(os.getcwd(), "graph.png")
+
     context = {
         'u_form': u_form,
         'p_form': p_form,
         'profile':profile_instance,
-        #'graph_path':graph_path
         
     }
     
@@ -80,7 +79,9 @@ def profile(request):
 def quizlistview(request):
     request.session['clicked']=0
     quizzes = Quiz.objects.all()
-    context = {'quizzes': quizzes}
+    prof=Profile.objects.get(user=request.user)
+    context = {'quizzes': quizzes,
+               'prof':prof}
     return render(request, 'users/QuizList.html', context)
     
 def quizquestions(request, quiz_id, question_id):
@@ -135,8 +136,9 @@ def quizquestions(request, quiz_id, question_id):
             
     else:
         form = QuizForm(instance=question_instance)
+    Qno=request.session[f'{quiz_id}']+1
     
-    context = {'form': form, 'quiz': quiz_instance, 'question': question_instance,}
+    context = {'form': form, 'quiz': quiz_instance, 'question': question_instance,'Qno':Qno}
     
     return render(request, 'users/quiz.html', context)
 
@@ -158,7 +160,7 @@ def results(request,quiz_id):
     for question in quiz.get_questions():
         
         if UserAnswer.objects.filter(user=request.user,quiz=quiz,question=question).exists():
-            if request.session[f'{question.id}']==1:
+            if request.session[f'{question.id}'] == 1:
                 userans=UserAnswer.objects.get(user=request.user,quiz=quiz,question=question)
             else:
                 continue   

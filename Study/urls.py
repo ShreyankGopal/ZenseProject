@@ -36,6 +36,7 @@ urlpatterns = [
     path('profile/', user_views.profile, name='profile'),
     path('quizlist/',user_views.quizlistview,name='quizlist'),
     path('Create_Question/', teacher_views.create_question, name='Create_Question'),
+    path('Create_Quiz/', teacher_views.createquiz, name='Create_Quiz'),
     
     #path('questions/<int:pk>',user_views.questions,name='questions'),
     #path('save_answer/', user_views.save_answer, name='save_answer'),

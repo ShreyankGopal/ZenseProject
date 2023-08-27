@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import QuestionsForm, OptionsFormSet,UserRegisterForm
+from .forms import QuestionsForm, OptionsFormSet,UserRegisterForm,QuizForm
 from django.contrib.auth.decorators import login_required,user_passes_test
 
 def email_check(user):
@@ -43,4 +43,13 @@ def create_question(request):
     context = {'question_form': question_form, 'options_formset': options_formset}
     return render(request, 'teachers/create_question.html', context)
 
-
+@user_passes_test(email_check)
+def createquiz(request):
+    if request.method == 'POST':
+        form=QuizForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form=QuizForm()
+    context={'form':form}
+    return render(request,'teachers/create_quiz.html',context)

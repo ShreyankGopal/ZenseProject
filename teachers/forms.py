@@ -19,6 +19,10 @@ class UserRegisterForm(UserCreationForm):
         super(UserRegisterForm, self).__init__(*args, **kwargs)
         self.fields['password1'].label = 'New Password'
         self.fields['password2'].label = 'Confirm New Password'
+class QuizForm(forms.ModelForm):
+    class Meta:
+        model=Quiz
+        fields=['topic','number_of_questions','difficulty','RequiredCredits']
 class QuestionsForm(forms.ModelForm):
     class Meta:
         model=Questions

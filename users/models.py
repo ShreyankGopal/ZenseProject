@@ -14,11 +14,11 @@ class Profile(models.Model):
         return f'{self.user.username} Profile'
 difficulty_choices=(('easy','easy'),('hard','hard'),('medium','medium'))
 class Quiz(models.Model):
-    name=models.CharField(max_length=200)
+    
     topic=models.CharField(max_length=100)
     number_of_questions=models.IntegerField()
     difficulty=models.CharField(max_length=100,choices=difficulty_choices)
-    TimeLimit=models.IntegerField(blank=True)
+    RequiredCredits=models.IntegerField(default=0)
     Attempted=models.IntegerField(default=0)
     def get_questions(self):
         questions=list(self.questions_set.all())
