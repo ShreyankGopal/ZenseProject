@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.views import View
 import os
 import random
+from .graphs import get_graph,get_piechart
 
 
 def register(request):
@@ -62,11 +63,14 @@ def profile(request):
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=profile_instance)
-
+    graph=get_graph(request.user)
+    pie=get_piechart(request.user)
     context = {
         'u_form': u_form,
         'p_form': p_form,
         'profile':profile_instance,
+        'graph':graph,
+        'pie':pie
         
     }
     
