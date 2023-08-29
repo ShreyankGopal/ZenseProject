@@ -6,9 +6,11 @@
 
 Welcome to Learn Lingo, an interactive platform designed to enhance students' English grammar skills through engaging multiple-choice quizzes. Our platform offers a diverse range of grammar-related quizzes. Upon completing each quiz, students can view their results on a dedicated page, allowing them to track their progress and identify areas for improvement. An essential feature of our platform is that each quiz attempt presents a unique set of questions, keeping the learning experience fresh and exciting. 
 
+
 ### Credit System 
 
 Every student registered on Learn Lingo has a personalized profile showcasing their credit score. This credit score dynamically updates based on the student's quiz performance, specifically the percentage of correct answers. As students accumulate more credits, they gain access to more advanced and challenging quizzes, fostering a sense of achievement and progression. 
+<img width="1512" alt="Screenshot 2023-08-27 at 11 39 15 PM" src="https://github.com/ShreyankGopal/ZenseProject/assets/122385347/7b25e5c2-b3d6-48a4-a661-483d94a128b1">
 
 ### Teachers Side 
 
